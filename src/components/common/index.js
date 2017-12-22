@@ -2,4 +2,5 @@ export * from './Header';
 export * from './Button';
 export * from './Card';
 export * from './CardSection';
-export * from './Input.js';
+export * from './Input';
+export * from './Spinner';

@@ -16,16 +16,32 @@ export default class LoginForm extends React.Component {
         this.setState({error: '', loading: true});
 
         firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(this.onLoginSuccess.bind(this))
             .catch(() => {
                 firebase.auth().createUserWithEmailAndPassword(email, password)
-                    .catch(() => {
-                        this.setState({error: 'Authentication Failed.'})
-                    })
+                    .then(this.onLoginSuccess.bind(this))
+                    .catch(this.onLoginFailed.bind(this))
             });
     }
 
+    onLoginFailed() {
+        this.setState({
+            error: 'Authentication Failed.',
+            loading: false
+        });
+    }
+
+    onLoginSuccess() {
+        this.setState({
+            email: '',
+            password: '',
+            loading: false,
+            error: ''
+        });
+    }
+
     renderLogInButton() {
-        if (this.state.loading == true ){
+        if (this.state.loading){
             return <Spinner size='small'/>
         }
         else {
@@ -38,7 +54,7 @@ export default class LoginForm extends React.Component {
             <Card>
                 <CardSection> 
                     <Input
-                        placeholder='something@mail.com'
+                        placeholder='a@mail.com'
                         label='Email'
                         value= {this.state.email}
                         onChangeText={email => this.setState({ email: email, error: '' })}
